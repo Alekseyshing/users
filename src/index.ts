@@ -11,23 +11,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
 // CORS configuration
-const corsOptions = {
-  origin: [
-    'http://localhost:5001',
-    'http://127.0.0.1:5001',
-    'http://localhost:5173', 
-    'http://127.0.0.1:5173',
-    'https://users-list-rosy.vercel.app',
-    'https://users-steel.vercel.app'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-
-// Middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 // Логирование всех входящих запросов
