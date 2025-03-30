@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
@@ -10,9 +13,12 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
-// CORS configuration
+// Security middleware
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(compression());
+app.use(morgan('dev'));
 
 // Логирование всех входящих запросов
 app.use((req, res, next) => {

@@ -1,28 +1,27 @@
 # Dependencies
 node_modules/
-npm-debug.log
-yarn-debug.log
-yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Environment variables
+# Build
+dist/
+build/
+
+# Environment
 .env
 .env.local
 .env.*.local
 
-# Build output
-dist/
-build/
-
-# IDE and editor files
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-.DS_Store
 
-# Database
-*.sqlite
-*.sqlite3
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 logs/
@@ -31,10 +30,10 @@ logs/
 # Testing
 coverage/
 
+# Database
+*.sqlite
+*.sqlite3
+
 # Temporary files
 tmp/
-temp/
-
-# System Files
-.DS_Store
-Thumbs.db 
+temp/ 
