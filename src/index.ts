@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
-// CORS configuration1
+// CORS configuration
 const corsOptions = {
   origin: [
     'http://localhost:5001',
@@ -44,7 +44,8 @@ app.get('/', (req, res) => {
   res.json({ 
     message: 'API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
   });
 });
 
@@ -58,7 +59,8 @@ app.use((req, res) => {
   res.status(404).json({ 
     error: 'Not Found',
     path: req.url,
-    method: req.method
+    method: req.method,
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -68,7 +70,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ 
     error: 'Internal Server Error',
     message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -77,5 +80,6 @@ connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`API URL: http://localhost:${PORT}`);
   });
 }); 
