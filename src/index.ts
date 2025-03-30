@@ -11,15 +11,15 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
-// CORS configuration
+// CORS configuration1
 const corsOptions = {
   origin: [
     'http://localhost:5001',
     'http://127.0.0.1:5001',
     'http://localhost:5173', 
     'http://127.0.0.1:5173',
-    'https://users-list-rosy.vercel.app'
-  ],
+    'https://users-list-rosy.vercel.app',
+    'https://users-steel.vercel.app/'  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
