@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
-// CORS configuration
+// CORS configuration1
 const corsOptions = {
   origin: [
     'http://localhost:5001',
