@@ -32,14 +32,26 @@ app.use(express.json());
 
 // Логирование всех входящих запросов
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  console.log('Request body:', req.body);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
   next();
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running' });
 });
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+
+// Error handling
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
 // Подключаемся к базе данных
 connectDB().then(() => {
