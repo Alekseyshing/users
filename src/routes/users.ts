@@ -5,7 +5,7 @@ import { User } from '../models/User';
 const router = express.Router();
 const userRepository = AppDataSource.getRepository(User);
 
-// Получить всех пользователей
+// Получить всех пользователей 123
 router.get('/', (async (req, res) => {
   try {
     const users = await userRepository.find({
