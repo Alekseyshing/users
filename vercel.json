@@ -22,10 +22,15 @@
     {
       "src": "/(.*)",
       "dest": "dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production",
-    "PORT": "5001"
+    "PORT": "5001",
+    "CORS_ORIGIN": "https://userss.vercel.app"
   }
 } 
