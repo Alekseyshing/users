@@ -4,14 +4,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build
+# Build output
 dist/
 build/
 
-# Environment
+# Environment variables
 .env
 .env.local
 .env.*.local
+
+# Database
+*.sqlite
+*.sqlite3
 
 # IDE
 .idea/
@@ -29,10 +33,6 @@ logs/
 
 # Testing
 coverage/
-
-# Database
-*.sqlite
-*.sqlite3
 
 # Temporary files
 tmp/
