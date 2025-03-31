@@ -4,16 +4,23 @@
     {
       "src": "dist/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "dist/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "dist/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "dist/$1"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  }
 } 

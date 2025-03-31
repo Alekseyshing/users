@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
+import path from 'path';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
@@ -19,6 +20,9 @@ app.use(cors());
 app.use(express.json());
 app.use(compression());
 app.use(morgan('dev'));
+
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Логирование всех входящих запросов
 app.use((req, res, next) => {
@@ -42,6 +46,11 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+
+// Serve frontend for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
 
 // 404 handler
 app.use((req, res) => {
