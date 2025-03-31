@@ -2,12 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/index.js",
-      "use": "@vercel/node"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     },
     {
-      "src": "dist/**/*",
-      "use": "@vercel/static"
+      "src": "dist/index.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -22,15 +25,12 @@
     {
       "src": "/(.*)",
       "dest": "dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "dist/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production",
     "PORT": "5001",
-    "CORS_ORIGIN": "https://userss.vercel.app"
+    "CORS_ORIGIN": "https://userss.vercel.app",
+    "API_URL": "https://userss.vercel.app"
   }
 } 
