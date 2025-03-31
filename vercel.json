@@ -4,6 +4,14 @@
     {
       "src": "dist/index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "dist/assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "dist/index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -12,8 +20,12 @@
       "dest": "dist/index.js"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "dist/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "dist/index.js"
+      "dest": "dist/index.html"
     }
   ],
   "env": {
