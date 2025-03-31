@@ -80,6 +80,7 @@ router.post('/register', (async (req, res) => {
     });
   } catch (error: unknown) {
     console.error('Registration error:', error);
+    console.log('Registration error:',  `${error} `);
     res.status(500).json({ message: 'Server error' });
   }
 }) as RequestHandler);
