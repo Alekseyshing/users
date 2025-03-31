@@ -32,7 +32,7 @@ router.post('/register', (async (req, res) => {
 
     console.log('Registration attempt for:', email);
 
-    // Проверяем, существует ли пользователь1
+    // Проверяем, существует ли пользователь12
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser) {
       console.log('User already exists:', email);
