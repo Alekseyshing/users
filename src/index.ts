@@ -75,8 +75,8 @@ app.get('/', (req, res) => {
 });
 
 // API Routes
-// app.use('/api/auth', authRoutes);
-app.use('/', authRoutes);
+app.use('/api/auth', authRoutes);
+// app.use('/', authRoutes);
 app.use('/api/users', userRoutes);
 
 // Serve frontend for all other routes
