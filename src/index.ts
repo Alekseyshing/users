@@ -40,7 +40,7 @@ app.use(express.json());
 app.use(compression());
 app.use(morgan('dev'));
 
-// Serve static files from the frontend build directory
+// Serve static files from the frontend build directory!
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Логирование всех входящих запросов
