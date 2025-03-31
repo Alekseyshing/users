@@ -8,7 +8,7 @@ import path from 'path';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
-import config from '../config';
+import config from './config';
 
 dotenv.config();
 
