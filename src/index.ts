@@ -63,7 +63,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Root endpoint
+// Root endpoint1
 app.get('/', (req, res) => {
   console.log('Root endpoint hit');
   res.json({ 
