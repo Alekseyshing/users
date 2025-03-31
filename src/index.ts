@@ -8,6 +8,7 @@ import path from 'path';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
+import config from '../config';
 
 dotenv.config();
 
@@ -15,8 +16,26 @@ const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
 // Security middleware
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://userss.vercel.app"]
+    }
+  }
+}));
+
+app.use(cors({
+  origin: config.corsOrigin,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(compression());
 app.use(morgan('dev'));
