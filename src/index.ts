@@ -41,7 +41,7 @@ app.use(compression());
 app.use(morgan('dev'));
 
 // Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Логирование всех входящих запросов
 app.use((req, res, next) => {
@@ -68,7 +68,7 @@ app.use('/api/users', userRoutes);
 
 // Serve frontend for all other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // 404 handler
