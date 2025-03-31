@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
-// Security middleware1
+// Security middleware12
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
