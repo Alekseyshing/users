@@ -19,6 +19,7 @@ router.get('/check-users', (async (req, res) => {
   }
 }) as RequestHandler);
 
+console.log('Received POST /register request');
 // Регистрация.
 router.post('/register', (async (req, res) => {
   try {
