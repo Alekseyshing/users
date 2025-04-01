@@ -16,6 +16,14 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT) || 5001;
 
+// CORS configuration - должно быть первым middleware
+app.use(cors({
+  origin: config.corsOrigin,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
@@ -28,14 +36,6 @@ app.use(helmet({
       connectSrc: ["'self'", config.corsOrigin]
     }
   }
-}));
-
-// CORS configuration
-app.use(cors({
-  origin: config.corsOrigin,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -64,8 +64,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);
+// API Routes - используем корневые пути для auth
+app.use('/', authRoutes); // Это обработает /register и /login
 app.use('/api/users', userRoutes);
 
 // Serve frontend for all other routes
@@ -105,6 +105,7 @@ const startServer = async () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`API URL: http://localhost:${PORT}`);
+      console.log(`CORS Origin: ${config.corsOrigin}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
