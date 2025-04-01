@@ -19,13 +19,25 @@ const addCorsHeaders: RequestHandler = (req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
 
-  // Логируем заголовки ответа
-  console.log('Response headers set:', res.getHeaders());
+  // Preflight request
+  if (req.method === 'OPTIONS') {
+    console.log('=== OPTIONS Request ===');
+    console.log('Request URL:', req.url);
+    console.log('Request method:', req.method);
+    console.log('Request headers:', req.headers);
+    console.log('CORS Origin:', config.corsOrigin);
+    console.log('Response headers:', res.getHeaders());
+    return res.status(200).end();
+  }
+
   next();
 };
 
+// Применяем CORS middleware ко всем маршрутам
+router.use(addCorsHeaders);
+
 // Временный маршрут для проверки пользователей!
-router.get('/check-users', addCorsHeaders, (async (req, res) => {
+router.get('/check-users', (async (req, res) => {
   try {
     const users = await userRepository.find();
     console.log('All users in database:', users);
@@ -38,7 +50,7 @@ router.get('/check-users', addCorsHeaders, (async (req, res) => {
 
 console.log('Received POST /register request');
 // Регистрация.
-router.post('/register', addCorsHeaders, (async (req, res) => {
+router.post('/register', async (req, res) => {
   console.log('=== Registration Request ===');
   console.log('Request URL:', req.url);
   console.log('Request method:', req.method);
@@ -87,10 +99,6 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    // Устанавливаем заголовки CORS перед отправкой ответа
-    res.header('Access-Control-Allow-Origin', config.corsOrigin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-
     console.log('=== Sending Registration Response ===');
     console.log('Response headers:', res.getHeaders());
     console.log('Response status:', 201);
@@ -119,10 +127,10 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
     console.error('Stack trace:', (error as Error).stack);
     res.status(500).json({ message: 'Server error' });
   }
-}) as RequestHandler);
+});
 
 // Вход
-router.post('/login', addCorsHeaders, (async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt for:', email);
@@ -179,24 +187,6 @@ router.post('/login', addCorsHeaders, (async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
   }
-}) as RequestHandler);
-
-// Обработка OPTIONS запросов
-router.options('*', addCorsHeaders, (req, res) => {
-  console.log('=== OPTIONS Request ===');
-  console.log('Request URL:', req.url);
-  console.log('Request method:', req.method);
-  console.log('Request headers:', req.headers);
-  console.log('CORS Origin:', config.corsOrigin);
-
-  // Устанавливаем заголовки CORS
-  res.header('Access-Control-Allow-Origin', config.corsOrigin);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  console.log('Response headers:', res.getHeaders());
-  res.status(200).end();
 });
 
 export default router; 
