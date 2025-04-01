@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
-import path from 'path';
 import { initializeDatabase } from './config/init-db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
@@ -61,9 +60,6 @@ app.use((req, res, next) => {
 app.use(compression());
 app.use(morgan('dev'));
 
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, '../public')));
-
 // Логирование всех входящих запросов
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -91,38 +87,21 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-// Serve frontend for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
 // 404 handler
 app.use((req, res) => {
-  console.log(`404 Not Found: ${req.method} ${req.url}`);
-  res.status(404).json({ 
-    error: 'Not Found',
-    path: req.url,
-    method: req.method,
-    timestamp: new Date().toISOString()
-  });
+  res.status(404).json({ error: 'Not Found' });
 });
 
-// Error handling
+// Error handling middleware
 app.use(errorHandler);
 
-// Инициализация базы данных и запуск сервера
+// Initialize database and start server
 const startServer = async () => {
   try {
-    const dbInitialized = await initializeDatabase();
-    if (!dbInitialized) {
-      throw new Error('Failed to initialize database');
-    }
-    
+    await initializeDatabase();
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`API URL: ${config.apiUrl}`);
-      console.log(`CORS Origin: ${config.corsOrigin}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

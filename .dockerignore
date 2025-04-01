@@ -5,10 +5,14 @@ dist
 .gitignore
 .env
 .env.*
+*.md
+.vscode
+.idea
+docker-compose.yml
+Dockerfile
+.dockerignore
 *.sqlite
 *.sqlite3
 .DS_Store
 README.md
-.vscode
-.idea
 coverage 

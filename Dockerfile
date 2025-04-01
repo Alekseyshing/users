@@ -1,26 +1,23 @@
-# Используем официальный образ Node.js
+# Используем Node.js 18 как базовый образ
 FROM node:18-alpine
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Создаем директорию для приложения
 WORKDIR /app
 
-# Копируем package.json и package-lock.json (если есть)
+# Копируем файлы package.json и package-lock.json
 COPY package*.json ./
 
 # Устанавливаем зависимости
 RUN npm install
 
-# Копируем все файлы проекта
+# Копируем исходный код
 COPY . .
 
-# Компилируем TypeScript в JavaScript
+# Собираем TypeScript код
 RUN npm run build
-
-# Указываем переменную окружения
-ENV PORT=5001
 
 # Открываем порт
 EXPOSE 5001
 
-# Команда для запуска сервера
+# Запускаем приложение
 CMD ["npm", "start"]
