@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "dist/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["dist/**"]
-      }
+      "use": "@vercel/node"
     },
     {
       "src": "public/**",
@@ -16,49 +13,34 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "methods": ["OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      },
-      "continue": true
-    },
-    {
-      "src": "/api/auth/(.*)",
       "dest": "dist/index.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "86400"
       }
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "dist/index.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      }
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/public/assets/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "dist/index.js"
     }
   ],
   "env": {
     "NODE_ENV": "production",
     "PORT": "5001",
     "CORS_ORIGIN": "https://usersfront.vercel.app",
-    "API_URL": "https://userss.vercel.app"
+    "API_URL": "https://userss.vercel.app",
+    "DB_HOST": "ep-cool-forest-123456.us-east-1.aws.neon.tech",
+    "DB_PORT": "5432",
+    "DB_NAME": "neondb",
+    "DB_USERNAME": "default",
+    "DB_PASSWORD": "your_password",
+    "DATABASE_URL": "postgres://default:your_password@ep-cool-forest-123456.us-east-1.aws.neon.tech/neondb?sslmode=require",
+    "JWT_SECRET": "your_jwt_secret",
+    "JWT_EXPIRES_IN": "24h"
   }
 } 
 

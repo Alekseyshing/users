@@ -10,6 +10,7 @@ import { initializeDatabase } from './config/init-db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import config from './config';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -21,9 +22,11 @@ app.use(cors({
   origin: config.corsOrigin,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Security middleware
 app.use(helmet({
@@ -40,6 +43,7 @@ app.use(helmet({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(morgan('dev'));
 
@@ -58,10 +62,10 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
   console.log('Root endpoint hit');
   res.json({ 
+    status: 'success',
     message: 'API is running',
-    timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -86,15 +90,7 @@ app.use((req, res) => {
 });
 
 // Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    timestamp: new Date().toISOString()
-  });
-});
+app.use(errorHandler);
 
 // Инициализация базы данных и запуск сервера
 const startServer = async () => {
