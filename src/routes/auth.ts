@@ -10,10 +10,17 @@ const userRepository = AppDataSource.getRepository(User);
 
 // Middleware для добавления CORS заголовков
 const addCorsHeaders: RequestHandler = (req, res, next) => {
+  console.log('Adding CORS headers. Origin:', config.corsOrigin);
+  console.log('Request method:', req.method);
+  console.log('Request headers:', req.headers);
+
   res.header('Access-Control-Allow-Origin', config.corsOrigin);
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
+
+  // Логируем заголовки ответа
+  console.log('Response headers set:', res.getHeaders());
   next();
 };
 
@@ -32,8 +39,14 @@ router.get('/check-users', addCorsHeaders, (async (req, res) => {
 console.log('Received POST /register request');
 // Регистрация.
 router.post('/register', addCorsHeaders, (async (req, res) => {
+  console.log('=== Registration Request ===');
+  console.log('Request URL:', req.url);
+  console.log('Request method:', req.method);
+  console.log('Request headers:', req.headers);
+  console.log('Request body:', req.body);
+  console.log('CORS Origin:', config.corsOrigin);
+  
   try {
-    console.log('Received registration request:', req.body);
     const { email, password, firstName, lastName } = req.body;
     
     if (!email || !password || !firstName || !lastName) {
@@ -43,7 +56,7 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
 
     console.log('Registration attempt for:', email);
 
-    // Проверяем, существует ли пользователь123
+    // Проверяем, существует ли пользователь
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser) {
       console.log('User already exists:', email);
@@ -53,7 +66,7 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
     // Хешируем пароль
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log('Password hashed successfully. Hash:', hashedPassword);
+    console.log('Password hashed successfully');
 
     // Создаем нового пользователя
     const user = new User({
@@ -61,12 +74,6 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
       password: hashedPassword,
       firstName,
       lastName
-    });
-
-    console.log('Attempting to save user:', {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
     });
 
     // Сохраняем пользователя
@@ -80,6 +87,23 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
       { expiresIn: '1h' }
     );
 
+    // Устанавливаем заголовки CORS перед отправкой ответа
+    res.header('Access-Control-Allow-Origin', config.corsOrigin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+
+    console.log('=== Sending Registration Response ===');
+    console.log('Response headers:', res.getHeaders());
+    console.log('Response status:', 201);
+    console.log('Response body:', {
+      token: token.substring(0, 10) + '...',
+      user: {
+        id: savedUser.id,
+        email: savedUser.email,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName
+      }
+    });
+
     res.status(201).json({
       token,
       user: {
@@ -90,8 +114,9 @@ router.post('/register', addCorsHeaders, (async (req, res) => {
       }
     });
   } catch (error: unknown) {
-    console.error('Registration error:', error);
-    console.log('Registration error:',  `${error} `);
+    console.error('=== Registration Error ===');
+    console.error('Error details:', error);
+    console.error('Stack trace:', (error as Error).stack);
     res.status(500).json({ message: 'Server error' });
   }
 }) as RequestHandler);
@@ -158,6 +183,19 @@ router.post('/login', addCorsHeaders, (async (req, res) => {
 
 // Обработка OPTIONS запросов
 router.options('*', addCorsHeaders, (req, res) => {
+  console.log('=== OPTIONS Request ===');
+  console.log('Request URL:', req.url);
+  console.log('Request method:', req.method);
+  console.log('Request headers:', req.headers);
+  console.log('CORS Origin:', config.corsOrigin);
+
+  // Устанавливаем заголовки CORS
+  res.header('Access-Control-Allow-Origin', config.corsOrigin);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  console.log('Response headers:', res.getHeaders());
   res.status(200).end();
 });
 
