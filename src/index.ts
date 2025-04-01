@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import path from 'path';
-import { connectDB } from './config/db';
 import { initializeDatabase } from './config/init-db';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
@@ -42,8 +41,23 @@ app.use(helmet({
   }
 }));
 
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Custom body parser for handling escaped JSON strings
+app.use((req, res, next) => {
+  if (req.method === 'POST' && req.body && typeof req.body === 'string') {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return res.status(400).json({ error: 'Invalid JSON format' });
+    }
+  }
+  next();
+});
+
 app.use(compression());
 app.use(morgan('dev'));
 
@@ -53,8 +67,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Логирование всех входящих запросов
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
+  if (req.method !== 'OPTIONS') {
+    console.log('Headers:', req.headers);
+    if (req.body && Object.keys(req.body).length > 0) {
+      console.log('Body:', req.body);
+    }
+  }
   next();
 });
 
@@ -95,7 +113,10 @@ app.use(errorHandler);
 // Инициализация базы данных и запуск сервера
 const startServer = async () => {
   try {
-    await connectDB();
+    const dbInitialized = await initializeDatabase();
+    if (!dbInitialized) {
+      throw new Error('Failed to initialize database');
+    }
     
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
