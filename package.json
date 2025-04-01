@@ -12,6 +12,9 @@
     "migration:generate": "typeorm migration:generate -d src/data-source.ts -n MigrationName",
     "migration:run": "typeorm migration:run -d src/data-source.ts"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
