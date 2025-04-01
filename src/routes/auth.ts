@@ -3,13 +3,22 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from '../config/db';
 import { User } from '../models/User';
+import config from '../config';
 
 const router = express.Router();
 const userRepository = AppDataSource.getRepository(User);
 
+// Middleware для добавления CORS заголовков
+const addCorsHeaders: RequestHandler = (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', config.corsOrigin);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+};
 
 // Временный маршрут для проверки пользователей!
-router.get('/check-users', (async (req, res) => {
+router.get('/check-users', addCorsHeaders, (async (req, res) => {
   try {
     const users = await userRepository.find();
     console.log('All users in database:', users);
@@ -22,7 +31,7 @@ router.get('/check-users', (async (req, res) => {
 
 console.log('Received POST /register request');
 // Регистрация.
-router.post('/register', (async (req, res) => {
+router.post('/register', addCorsHeaders, (async (req, res) => {
   try {
     console.log('Received registration request:', req.body);
     const { email, password, firstName, lastName } = req.body;
@@ -88,7 +97,7 @@ router.post('/register', (async (req, res) => {
 }) as RequestHandler);
 
 // Вход
-router.post('/login', (async (req, res) => {
+router.post('/login', addCorsHeaders, (async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt for:', email);
@@ -146,5 +155,10 @@ router.post('/login', (async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 }) as RequestHandler);
+
+// Обработка OPTIONS запросов
+router.options('*', addCorsHeaders, (req, res) => {
+  res.status(200).end();
+});
 
 export default router; 

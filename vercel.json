@@ -12,6 +12,16 @@
   ],
   "routes": [
     {
+      "src": "/register",
+      "dest": "dist/index.js",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "src": "/login",
+      "dest": "dist/index.js",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
       "src": "/api/(.*)",
       "dest": "dist/index.js"
     },
@@ -27,8 +37,8 @@
   "env": {
     "NODE_ENV": "production",
     "PORT": "5001",
-    "CORS_ORIGIN": "'https://usersfront.vercel.app'",
-    "API_URL": "'https://usersfront.vercel.app'"
+    "CORS_ORIGIN": "https://usersfront.vercel.app",
+    "API_URL": "https://userss.vercel.app"
   }
 } 
 
