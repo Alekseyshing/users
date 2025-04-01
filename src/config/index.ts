@@ -10,11 +10,6 @@ const config = {
   apiUrl: process.env.API_URL || 'https://userss.vercel.app',
   database: {
     url: process.env.DATABASE_URL,
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT) || 5432,
-    name: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'your_jwt_secret_here',
