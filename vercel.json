@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "dist/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**"]
+      }
     },
     {
       "src": "public/**",
@@ -24,7 +27,7 @@
     },
     {
       "src": "/register",
-      "dest": "/dist/index.js",
+      "dest": "dist/index.js",
       "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
@@ -35,7 +38,7 @@
     },
     {
       "src": "/login",
-      "dest": "/dist/index.js",
+      "dest": "dist/index.js",
       "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
@@ -46,7 +49,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/dist/index.js"
+      "dest": "dist/index.js"
     },
     {
       "src": "/assets/(.*)",
