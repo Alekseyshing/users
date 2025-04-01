@@ -1,12 +1,15 @@
 import { DataSource } from 'typeorm';
 import { User } from '../models/User';
+import path from 'path';
 
 export const AppDataSource = new DataSource({
   type: 'sqlite',
   database: 'database.sqlite',
   entities: [User],
-  synchronize: true, // В продакшене отключить
-  logging: true
+  synchronize: false, // Отключаем синхронизацию, когда используем миграции
+  logging: true,
+  migrations: [path.join(__dirname, 'migrations', '*.ts')], // Путь к миграциям
+  subscribers: [],
 });
 
 export const connectDB = async () => {
@@ -17,4 +20,4 @@ export const connectDB = async () => {
     console.error('Error connecting to database:', error);
     process.exit(1);
   }
-}; 
+};
