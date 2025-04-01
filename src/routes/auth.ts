@@ -61,6 +61,8 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
     
+    console.log('Received data:', { email, firstName, lastName, passwordLength: password?.length });
+    
     if (!email || !password || !firstName || !lastName) {
       console.log('Missing required fields:', { email, firstName, lastName });
       return res.status(400).json({ message: 'All fields are required' });
@@ -70,17 +72,21 @@ router.post('/register', async (req, res) => {
 
     // Проверяем, существует ли пользователь
     const existingUser = await userRepository.findOne({ where: { email } });
+    console.log('Existing user check:', existingUser ? 'Found' : 'Not found');
+    
     if (existingUser) {
       console.log('User already exists:', email);
       return res.status(400).json({ message: 'User already exists' });
     }
 
     // Хешируем пароль
+    console.log('Hashing password...');
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log('Password hashed successfully');
 
     // Создаем нового пользователя
+    console.log('Creating new user...');
     const user = new User({
       email,
       password: hashedPassword,
@@ -89,30 +95,23 @@ router.post('/register', async (req, res) => {
     });
 
     // Сохраняем пользователя
+    console.log('Saving user to database...');
     const savedUser = await userRepository.save(user);
     console.log('User saved successfully:', savedUser.id);
 
     // Создаем JWT токен
+    console.log('Generating JWT token...');
     const token = jwt.sign(
       { userId: savedUser.id },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '1h' }
     );
+    console.log('JWT token generated successfully');
 
     console.log('=== Sending Registration Response ===');
     console.log('Response headers:', res.getHeaders());
-    console.log('Response status:', 201);
-    console.log('Response body:', {
-      token: token.substring(0, 10) + '...',
-      user: {
-        id: savedUser.id,
-        email: savedUser.email,
-        firstName: savedUser.firstName,
-        lastName: savedUser.lastName
-      }
-    });
-
-    res.status(201).json({
+    
+    const response = {
       token,
       user: {
         id: savedUser.id,
@@ -120,12 +119,19 @@ router.post('/register', async (req, res) => {
         firstName: savedUser.firstName,
         lastName: savedUser.lastName
       }
+    };
+    
+    console.log('Response body:', {
+      ...response,
+      token: response.token.substring(0, 10) + '...'
     });
+
+    return res.status(201).json(response);
   } catch (error: unknown) {
     console.error('=== Registration Error ===');
     console.error('Error details:', error);
     console.error('Stack trace:', (error as Error).stack);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error', error: (error as Error).message });
   }
 });
 

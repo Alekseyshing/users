@@ -3,8 +3,10 @@ import { User } from '../models/User';
 
 export const initializeDatabase = async () => {
   try {
-    await AppDataSource.initialize();
-    console.log('Database initialized successfully');
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+      console.log('Database initialized successfully');
+    }
 
     // Проверяем, есть ли уже пользователи
     const userRepository = AppDataSource.getRepository(User);

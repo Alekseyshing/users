@@ -81,7 +81,7 @@ app.get('/', (req, res) => {
 });
 
 // API Routes - используем корневые пути для auth
-app.use('/', authRoutes); // Это обработает /register и /login
+app.use('/api/auth', authRoutes); // Монтируем auth маршруты на /api/auth
 app.use('/api/users', userRoutes);
 
 // Serve frontend for all other routes
@@ -115,7 +115,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 const startServer = async () => {
   try {
     await connectDB();
-    await initializeDatabase();
     
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
