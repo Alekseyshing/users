@@ -20,47 +20,41 @@
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Credentials": "true"
       },
-      "status": 200
+      "continue": true
     },
     {
       "src": "/register",
-      "dest": "dist/index.js",
+      "dest": "/dist/index.js",
       "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Credentials": "true"
       }
     },
     {
       "src": "/login",
-      "dest": "dist/index.js",
+      "dest": "/dist/index.js",
       "methods": ["POST"],
       "headers": {
         "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Access-Control-Allow-Credentials": "true"
       }
     },
     {
       "src": "/api/(.*)",
-      "dest": "dist/index.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://usersfront.vercel.app",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      }
+      "dest": "/dist/index.js"
     },
     {
       "src": "/assets/(.*)",
-      "dest": "public/assets/$1"
+      "dest": "/public/assets/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "public/index.html"
+      "dest": "/public/index.html"
     }
   ],
   "env": {
