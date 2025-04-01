@@ -30,20 +30,26 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: '*',
+  origin: 'https://usersfront.vercel.app',  // Разрешенный фронтенд
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Обрабатываем preflight-запросы
-app.options('*', cors());
+// Обрабатываем preflight-запросы (OPTIONS)
+app.options('*', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "https://usersfront.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(204);  // No Content
+});
 
 // Добавляем заголовки вручную (если нужно)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://usersfront.vercel.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true"); // Важно, если передаешь куки
   next();
 });
 
@@ -81,6 +87,7 @@ app.use('/api/users', userRoutes);
 // Serve frontend for all other routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
+  console.log(req.url);
 });
 
 // 404 handler
